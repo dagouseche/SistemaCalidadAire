@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31313.79
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaCalidadAire.Cliente", "SistemaCalidadAire.Cliente\SistemaCalidadAire.Cliente.csproj", "{AE7C2987-CA40-40F3-AD83-59D997AF8BD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaCalidadAire.Entidades", "SistemaCalidadAire.Entidades\SistemaCalidadAire.Entidades.csproj", "{28FB67BC-85C4-4918-8DA0-520C4C89D2F6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AE7C2987-CA40-40F3-AD83-59D997AF8BD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE7C2987-CA40-40F3-AD83-59D997AF8BD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE7C2987-CA40-40F3-AD83-59D997AF8BD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE7C2987-CA40-40F3-AD83-59D997AF8BD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28FB67BC-85C4-4918-8DA0-520C4C89D2F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28FB67BC-85C4-4918-8DA0-520C4C89D2F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28FB67BC-85C4-4918-8DA0-520C4C89D2F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28FB67BC-85C4-4918-8DA0-520C4C89D2F6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {98444CDA-B17C-4FA5-8AF1-6D3B904EBE3C}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,38 @@
+﻿@model List<SistemaCalidadAire.Entidades.Qualitydata>
+
+<table id="tablaDetalle" class="table table-bordered table-condensed table-hover table-striped">
+    <thead>
+        <tr>
+            <th>Presión</th>
+            <th>Temperatura</th>
+            <th>Humedad (%)</th>
+            <th>Material particulado PM1.0</th>
+            <th>Material particulado PM2.5</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.pressure</td>
+                <td>@item.temp</td>
+                <td>@item.rh</td>
+                <td>@item.value_particle1</td>
+                <td>@item.value_particle2</td>
+                <td>@item.date</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<script>
+
+    $(document).ready(function () {
+        $('#tablaDetalle').DataTable({
+            "scrollX": true
+        });
+    });
+
+</script>

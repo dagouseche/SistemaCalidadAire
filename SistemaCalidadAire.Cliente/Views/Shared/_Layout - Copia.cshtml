@@ -1,0 +1,191 @@
+﻿@if (!String.IsNullOrEmpty((string)Session["Usuario"]))
+{
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+
+        <title>Translanza</title>
+
+        <!-- Favicon -->
+        <link rel="shortcut icon" type="image/png" href="~/Content/img/favicon.png" />
+
+        <link rel="stylesheet" type="text/css" href="~/Content_Admin/estilo.css">
+        <link rel="stylesheet" type="text/css" href="~/Content_Admin/bootstrap/css/bootstrap.min.css">
+        <script type="text/javascript" src="~/Scripts/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="~/Content_Admin/bootstrap/js/bootstrap.min.js"></script>
+        @*datatable*@
+        <link href="~/Content_Admin/DataTable/jquery.dataTables.css" rel="stylesheet" />
+        <script src="~/Content_Admin/DataTable/jquery.dataTables.js"></script>
+        <!-- Select2 -->
+        <link rel="stylesheet" href="~/Content_Admin/Select2/select2.min.css">
+        <script src="~/Content_Admin/Select2/select2.min.js"></script>
+        <script src="~/Content_Admin/Select2/select2.full.min.js"></script>
+        @*sweetalert2*@
+        <script src="~/Content_Admin/SweetAlert2/sweetalert2.min.js"></script>
+        <link rel="stylesheet" href="~/Content_Admin/SweetAlert2/sweetalert2.min.css">
+        @*AJAX*@
+        <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+        <!-- InputMask -->
+        <script src="~/Scripts/jquery.mask.min.js"></script>
+        <!-- Calendario -->
+        <script src="~/Content_Admin/datetimepicker/jquery.datetimepicker.full.min.js"></script>
+        <link href="~/Content_Admin/datetimepicker/jquery.datetimepicker.min.css" rel="stylesheet" />
+        @*Mensaje De Confirmacion*@
+        <script src="~/Content_Admin/bootstrap/js/bootstrap-dialog.js"></script>
+        <link href="~/Content_Admin/bootstrap/css/bootstrap-dialog.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div id="divLoader" style="display:none; position:absolute; z-index: 10; left: 45%; top: 35% ">
+            <img src="~/Content_Admin/img/loader.gif" />
+        </div>
+
+        <header>
+            @*Div necesario para mostrar modal*@
+            <div id="Dialog" />
+            <div class="menu_bar">
+                <a href="#" class="bt-menu" id="grande"><img style="width:100px; height:23px" src="~/Content/img/LogoPequeño.png" /></a>
+                @*@Url.Action("Grafica", "Inicio")*@
+            </div>
+            <nav>
+                <ul>
+                    <li class="pantallaGrande">
+                        <a class="pantallaGrande" href="@Url.Action("Grafica","Inicio")">
+                            <img style="width:100px; height:23px " src="~/Content/img/LogoPequeño.png" />
+                        </a>
+                    </li>
+
+                    <li class="pantallaGrande">
+                        <a href="@Url.Action("Grafica","Inicio")"></a>
+                    </li>
+
+                    @*@foreach (var menu in ((List<Menu>)Session["ListaMenu"]))
+                        {
+                            <li>
+                                @Ajax.ActionLink(menu.Nombre, menu.Metodo, menu.Controlador, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "contenedor", OnBegin = "iniciarCarga", OnComplete = "detenerCarga" })
+                            </li>
+                        }*@
+
+                    <li>
+                        @Ajax.ActionLink(menu.Nombre, menu.Metodo, menu.Controlador, new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "contenedor", OnBegin = "iniciarCarga", OnComplete = "detenerCarga" })
+                    </li>
+
+                    <li class="MenuO"><a href="@Url.Action("LimpiarSession", "Sitio")"><span class="icon-house"></span>Cerrar Sesion</a></li>
+                </ul>
+            </nav>
+        </header>
+        <content>
+            <div class="col-xs-12 col-md-12" id="contenedor">
+                @RenderBody()
+            </div>
+        </content>
+
+    </body>
+</html>
+
+<script type="text/javascript">
+
+    $(document).ready(main);
+
+    var contador = 1;
+
+    function main() {
+        $('.menu_bar').click(function () {
+            //$('nav').toggle();
+
+            if (contador == 1) {
+                $('nav').animate({
+                    left: '0'
+                });
+                contador = 0;
+            } else {
+                contador = 1;
+                $('nav').animate({
+                    left: '-100%'
+                });
+            }
+
+        });
+    };
+
+    function iniciarCarga() {
+        $("#divLoader").show();
+    }
+
+    function detenerCarga() {
+        $("#divLoader").hide();
+    }
+
+    function AlertaConfirmacion(encabezado, mensaje, tipo, direccion) {
+        swal({
+            title: encabezado,
+            text: mensaje,
+            type: tipo,
+            showCancelButton: false,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '',
+            confirmButtonText: 'OK',
+            cancelButtonText: '',
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: '',
+            buttonsStyling: false
+        }).then(function () {
+            if (tipo != "error") {
+                window.location.href = direccion;
+            }
+        })
+    }
+
+    function AlertaConfirmacion2(encabezado, mensaje, tipo) {
+        swal({
+            title: encabezado,
+            text: mensaje,
+            type: tipo,
+            showCancelButton: false,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '',
+            confirmButtonText: 'OK',
+            cancelButtonText: '',
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: '',
+            buttonsStyling: false
+        });
+    }
+
+    function NotificacionUsuario(resultado) {
+        if (resultado == 'CORRECTO') {
+            swal({
+                title: 'Almacenamiento Exitoso',
+                text: '',
+                type: 'success',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '',
+                confirmButtonText: 'OK',
+                cancelButtonText: '',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: '',
+                buttonsStyling: false
+            });
+        }
+        else if (resultado == 'ADVERTENCIA') {
+            swal({
+                title: 'Alerta!',
+                text: 'Se generaron advertencias, verifique!',
+                type: 'warning',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '',
+                confirmButtonText: 'OK',
+                cancelButtonText: '',
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: '',
+                buttonsStyling: false
+            });
+        }
+    }
+
+    document.oncontextmenu = function () { return false; }
+</script>
+}
