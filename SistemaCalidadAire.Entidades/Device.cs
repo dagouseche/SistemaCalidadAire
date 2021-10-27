@@ -21,5 +21,20 @@
         /// Altitud del dispositivo
         /// </summary>
         public int altitude { get; set; }
+
+        /// <summary>
+        /// Localidad del dispositivo
+        /// </summary>
+        public string district { get; set; }
+
+        /// <summary>
+        /// Ciudad donde se encuentra el dispositivo
+        /// </summary>
+        public string city { get; set; }
+
+        /// <summary>
+        /// Pais donde se ubica el dispositivo
+        /// </summary>
+        public string country { get; set; }
     }
 }

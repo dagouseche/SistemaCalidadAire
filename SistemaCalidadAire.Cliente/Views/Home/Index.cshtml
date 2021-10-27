@@ -2,6 +2,7 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    bool usuarioExterno = SistemaCalidadAire.Cliente.Utilities.Data.UsuarioExterno;
 }
 
 <style>
@@ -29,10 +30,14 @@
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-    <a href="@Url.Action("GenerarExcelReporteAsync", "Home")" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-        <i class="fas fa-download fa-sm text-white-50"></i> Generar Reporte
-    </a>
+    @if (!usuarioExterno)
+    {
+        <a href="@Url.Action("GenerarExcelReporteAsync", "Home")" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-download fa-sm text-white-50"></i> Generar Reporte
+        </a>
+    }
 </div>
+
 
 <!-- Content Row -->
 <div class="row">
@@ -121,7 +126,10 @@
                     <th></th>
                     <th>Nombre</th>
                     <th>Altitud</th>
-                    <th>Geo</th>
+                    @if (!usuarioExterno)
+                    {
+                        <th>Geo</th>
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -131,7 +139,10 @@
                         <td>@Ajax.ActionLink("Ver detalle", "DetalleQualityDataAsync", new { idDevice = item.id }, new AjaxOptions { InsertionMode = InsertionMode.Replace, HttpMethod = "POST", UpdateTargetId = "contenedorModal", OnBegin = "Loader()", OnSuccess = "abrirModal()", OnComplete = "UnLoader()" })</td>
                         <td>@item.name</td>
                         <td>@item.altitude</td>
-                        <td>@item.geo</td>
+                        @if (!usuarioExterno)
+                        {
+                            <td>@item.geo</td>
+                        }
                     </tr>
                 }
             </tbody>
@@ -202,7 +213,7 @@
 @foreach (SistemaCalidadAire.Entidades.Device item in Model.ListaDispositivos)
 {
     <script>
-        var geolocalizacion = '@item.geo'.split(' ');
+        var geolocalizacion = '@item.geo'.split(', ');
 
         var registro = ['@item.id', '@item.name', Number(geolocalizacion[0]), Number(geolocalizacion[1])];
         listaRegistros.push(registro);

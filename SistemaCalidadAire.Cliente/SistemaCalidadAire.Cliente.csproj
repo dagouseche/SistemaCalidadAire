@@ -1949,8 +1949,6 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Sitio\Index.cshtml" />
   </ItemGroup>
@@ -2150,11 +2148,14 @@
     <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
     <None Include="packages.config" />
-    <Content Include="Views\Shared\_Layout - Copia.cshtml" />
     <None Include="Properties\PublishProfiles\IISProfile.pubxml" />
     <Content Include="Views\Home\_DetalleQualityData.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SistemaCalidadAire.Datos\SistemaCalidadAire.Datos.csproj">
+      <Project>{2030f7b9-71b3-4d5a-84b0-1c22e4de0ab7}</Project>
+      <Name>SistemaCalidadAire.Datos</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SistemaCalidadAire.Entidades\SistemaCalidadAire.Entidades.csproj">
       <Project>{28fb67bc-85c4-4918-8da0-520c4c89d2f6}</Project>
       <Name>SistemaCalidadAire.Entidades</Name>

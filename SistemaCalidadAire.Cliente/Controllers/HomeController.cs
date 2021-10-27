@@ -2,14 +2,13 @@
 using NPOI.SS.UserModel;
 using SistemaCalidadAire.Cliente.Models;
 using SistemaCalidadAire.Cliente.Utilities;
+using SistemaCalidadAire.Datos;
 using SistemaCalidadAire.Entidades;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Web;
 using System.Web.Mvc;
 
 namespace SistemaCalidadAire.Cliente.Controllers
@@ -17,18 +16,13 @@ namespace SistemaCalidadAire.Cliente.Controllers
     [ValidadorSesion]
     public class HomeController : Controller
     {
-        private readonly HttpClient client = new HttpClient
-        {
-            BaseAddress = new Uri("http://ragnarok000.pythonanywhere.com/calidadaire/")
-        };
-
         /// <summary>
         /// Metodo que se encarga de cargar la vista principal del sitio de calidad
         /// </summary>
         /// <returns></returns>
         public async System.Threading.Tasks.Task<ActionResult> Index()
         {
-            System.Globalization.DateTimeFormatInfo mfi = CultureInfo.GetCultureInfo("es-CO").DateTimeFormat;
+            DateTimeFormatInfo mfi = CultureInfo.GetCultureInfo("es-CO").DateTimeFormat;
 
             DashboardModel model = new DashboardModel
             {
@@ -36,27 +30,78 @@ namespace SistemaCalidadAire.Cliente.Controllers
                 ListaDispositivos = new List<Device>(),
                 ListaTemperaturas = new List<DataGrafica>()
             };
-            string usuario = Session["Usuario"].ToString();
 
-            HttpResponseMessage response = await client.GetAsync("device");
-            if (response.IsSuccessStatusCode)
+            List<Qualitydata> listaDatosCalidad = new List<Qualitydata>();
+
+            if (Data.UsuarioExterno)
             {
-                model.ListaDispositivos = await response.Content.ReadAsAsync<List<Device>>();
+                List<Lastday> listaUltimas24Horas = await DAOQualityData.Instance.ConsultarDatosCalidad24Horas();
+
+                List<Device> listaDispositivos = (from data in listaUltimas24Horas
+                                                  select new Device
+                                                  {
+                                                      id = data.device,
+                                                      altitude = data.altitude,
+                                                      city = data.city,
+                                                      country = data.country,
+                                                      district = data.district,
+                                                      geo = data.geo,
+                                                      name = data.name
+                                                  }).ToList();
+
+                listaDatosCalidad = (from data in listaUltimas24Horas
+                                     select new Qualitydata
+                                     {
+                                         device = data.device,
+                                         date = data.date,
+                                         pressure = data.pressure,
+                                         rh = data.rh,
+                                         value_particle1 = data.value_particle1,
+                                         value_particle2 = data.value_particle2,
+                                         temp = data.temp
+                                     }).ToList();
+
+                List<Device> listaDispositivosLocalidad = new List<Device>();
+
+                foreach (string localidad in (from item in listaDispositivos
+                                              select item.district).Distinct())
+                {
+                    listaDispositivosLocalidad.AddRange(listaDispositivos.Where(w => w.district == localidad).Select(s => new Device { name = localidad, geo = s.geo, id = s.id }).ToList());
+                }
+
+                model.ListaDispositivos = listaDispositivosLocalidad;
+            }
+            else
+            {
+                List<Device> listaDispositivos = await DAODevice.Instance.ConsultarDispositivos(Data.CookieSession);
+
+                Usuario datosUsuario = await DAOUser.Instance.ConsultarDatosUsuario(Data.UsuarioLogeado, Data.CookieSession);
+
+                List<UserTypes> listaTiposUsuario = await DAOUser.Instance.ConsultarTiposUsuario();
+
+                if (listaTiposUsuario.Where(w => w.id == datosUsuario.type).First().name == "Investigador")
+                {
+                    model.ListaDispositivos = listaDispositivos;
+
+                    listaDatosCalidad = await DAOQualityData.Instance.ConsultarDatosCalidad(Data.CookieSession);
+                }
+                else if (listaTiposUsuario.Where(w => w.id == datosUsuario.type).First().name == "Participante")
+                {
+                    model.ListaDispositivos = listaDispositivos.Where(w => w.id == datosUsuario.device).ToList();
+
+                    listaDatosCalidad = await DAOQualityData.Instance.ConsultarDatosCalidadXDispositivo(datosUsuario.device, Data.CookieSession);
+                }
             }
 
-            HttpResponseMessage responseQualitydata = await client.GetAsync("qualitydata");
-            if (responseQualitydata.IsSuccessStatusCode)
-            {
-                var listaDatos = await responseQualitydata.Content.ReadAsAsync<List<Qualitydata>>();
+            ///Datos para la grafica de tempratura
+            model.ListaTemperaturas = (from item in listaDatosCalidad
+                                       group item by DateTime.Parse(item.date).Month into newItem
+                                       select new DataGrafica { Id = newItem.Key, Label = mfi.GetMonthName(newItem.Key), Valor = newItem.Average(s => s.temp).ToString() }).ToList();
 
-                model.ListaTemperaturas = (from item in listaDatos
-                                           group item by DateTime.Parse(item.date).Month into newItem
-                                           select new DataGrafica { Id = newItem.Key, Label = mfi.GetMonthName(newItem.Key), Valor = newItem.Average(s => s.temp).ToString() }).ToList();
-
-                model.ListaPM2 = (from item in listaDatos
-                                           group item by DateTime.Parse(item.date).Month into newItem
-                                           select new DataGrafica { Id = newItem.Key, Label = mfi.GetMonthName(newItem.Key), Valor = newItem.Average(s => s.value_particle2).ToString() }).ToList();
-            }
+            ///Datos para la grafica de datos de calidad
+            model.ListaPM2 = (from item in listaDatosCalidad
+                              group item by DateTime.Parse(item.date).Month into newItem
+                              select new DataGrafica { Id = newItem.Key, Label = mfi.GetMonthName(newItem.Key), Valor = newItem.Average(s => s.value_particle2).ToString() }).ToList();
 
             return View(model);
         }
@@ -72,8 +117,6 @@ namespace SistemaCalidadAire.Cliente.Controllers
         {
             try
             {
-                List<Qualitydata> listadoDatos = new List<Qualitydata>();
-
                 byte[] excel = Convert.FromBase64String("");
                 HSSFWorkbook workbook = new HSSFWorkbook();
                 ISheet sheet = workbook.CreateSheet("Reporte qualitydata");
@@ -89,10 +132,25 @@ namespace SistemaCalidadAire.Cliente.Controllers
                     sheet.AutoSizeColumn(i);
                 }
 
-                HttpResponseMessage responseQualitydata = await client.GetAsync("qualitydata");
-                if (responseQualitydata.IsSuccessStatusCode)
+                List<Qualitydata> listadoDatos;
+
+                if (Data.UsuarioExterno)
                 {
-                    listadoDatos = await responseQualitydata.Content.ReadAsAsync<List<Qualitydata>>();
+                    listadoDatos = (from data in await DAOQualityData.Instance.ConsultarDatosCalidad24Horas()
+                               select new Qualitydata
+                               {
+                                   device = data.device,
+                                   date = data.date,
+                                   pressure = data.pressure,
+                                   rh = data.rh,
+                                   value_particle1 = data.value_particle1,
+                                   value_particle2 = data.value_particle2,
+                                   temp = data.temp
+                               }).ToList();
+                }
+                else
+                {
+                    listadoDatos = await DAOQualityData.Instance.ConsultarDatosCalidad(Data.CookieSession);
                 }
 
                 foreach (Qualitydata item in listadoDatos)
@@ -129,15 +187,29 @@ namespace SistemaCalidadAire.Cliente.Controllers
         [HttpPost]
         public async System.Threading.Tasks.Task<JsonResult> ConsultarInfoDeviceAsync(int idDevice)
         {
-            Qualitydata model = null;
+            List<Qualitydata> listado;
 
-            HttpResponseMessage response = await client.GetAsync($"qualitydata/selectbydevice/{idDevice}");
-            if (response.IsSuccessStatusCode)
+            if (Data.UsuarioExterno)
             {
-                List<Qualitydata> listado = await response.Content.ReadAsAsync<List<Qualitydata>>();
-
-                model = listado.FirstOrDefault();
+                listado = (from data in await DAOQualityData.Instance.ConsultarDatosCalidad24Horas()
+                           select new Qualitydata
+                           {
+                               device = data.device,
+                               date = data.date,
+                               pressure = data.pressure,
+                               rh = data.rh,
+                               value_particle1 = data.value_particle1,
+                               value_particle2 = data.value_particle2,
+                               temp = data.temp
+                           }).Where(w => w.device == idDevice).ToList();
             }
+            else {
+                DateTime fechaUltimas24Horas = DateTime.Now.AddHours(-24);
+                listado = (from data in await DAOQualityData.Instance.ConsultarDatosCalidadXDispositivo(idDevice, Data.CookieSession)
+                           select data).Where(w => DateTime.Parse(w.date) >= fechaUltimas24Horas).ToList();
+            }
+
+            Qualitydata model = listado.FirstOrDefault();
 
             if (model != null)
             {
@@ -157,15 +229,28 @@ namespace SistemaCalidadAire.Cliente.Controllers
         [HttpPost]
         public async System.Threading.Tasks.Task<PartialViewResult> DetalleQualityDataAsync(int idDevice)
         {
-            HttpResponseMessage response = await client.GetAsync($"qualitydata/selectbydevice/{idDevice}");
-            if (response.IsSuccessStatusCode)
-            {
-                List<Qualitydata> listado = await response.Content.ReadAsAsync<List<Qualitydata>>();
+            List<Qualitydata> listado;
 
-                return PartialView("_DetalleQualityData", listado);
+            if (Data.UsuarioExterno)
+            {
+                listado = (from data in await DAOQualityData.Instance.ConsultarDatosCalidad24Horas()
+                           select new Qualitydata
+                           {
+                               device = data.device,
+                               date = data.date,
+                               pressure = data.pressure,
+                               rh = data.rh,
+                               value_particle1 = data.value_particle1,
+                               value_particle2 = data.value_particle2,
+                               temp = data.temp
+                           }).Where(w => w.device == idDevice).ToList();
+            }
+            else
+            {
+                listado = await DAOQualityData.Instance.ConsultarDatosCalidadXDispositivo(idDevice, Data.CookieSession);
             }
 
-            return PartialView("_DetalleQualityData", new List<Qualitydata>());
+            return PartialView("_DetalleQualityData", listado);
         }
     }
 }

@@ -1,10 +1,13 @@
 ﻿using SistemaCalidadAire.Entidades;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Web.Mvc;
 using System.Net.Http.Formatting;
+using System.Net;
+using System.Web;
+using SistemaCalidadAire.Cliente.Utilities;
+using SistemaCalidadAire.Datos;
 
 namespace SistemaCalidadAire.Cliente.Controllers
 {
@@ -61,10 +64,12 @@ namespace SistemaCalidadAire.Cliente.Controllers
         private async System.Threading.Tasks.Task<bool> ValidateLoginAsync(string username, string passwd)
         {
             Usuario usuarioLogeado = null;
+            string cookieValue = string.Empty;
 
             try
             {
-                var login = new {
+                var login = new
+                {
                     id = username,
                     psw = passwd
                 };
@@ -73,30 +78,27 @@ namespace SistemaCalidadAire.Cliente.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     usuarioLogeado = await response.Content.ReadAsAsync<Usuario>();
-                }
 
-                //usuarioLogeado = new Usuario { id = username, user = new UserTypes { RowID = 1, Nombre = "Administrador" } };/*db.Usuario.FirstOrDefault(f => f.NombreUsuario == username && f.Contraseña == contraseña && f.Activo);*/
+                    response.Headers.TryGetValues("Set-Cookie", out var setCookie);
+                    string setCookieString = setCookie.Single();
+                    string[] cookieTokens = setCookieString.Split(';');
+                    string firstCookie = cookieTokens.FirstOrDefault();
+                    string[] keyValueTokens = firstCookie.Split('=');
+                    string valueString = keyValueTokens[1];
+
+                    cookieValue = HttpUtility.UrlDecode(valueString);
+                }
             }
-            catch (Exception e)
+            catch
             {
                 return false;
             }
 
-            List<Menu> menuUsuario;
-
             if (usuarioLogeado != null)
             {
-                if (usuarioLogeado.type != 1/*!= "Administrador"*/)
-                {
-                    menuUsuario = new List<Menu>();
-                }
-                else
-                {
-                    menuUsuario = new List<Menu>();
-                }
-
                 Session["Usuario"] = usuarioLogeado.id;
-                Session["ListaMenu"] = menuUsuario.Select(s => new Menu { Nombre = s.Nombre, Controlador = s.Controlador, Metodo = s.Metodo }).ToList();
+                Session["CookieSession"] = cookieValue;
+                Session["UsuarioExterno"] = false;
                 Session.Timeout = 180;
 
                 return true;
@@ -108,20 +110,30 @@ namespace SistemaCalidadAire.Cliente.Controllers
         }
 
         /// <summary>
+        /// Metodo que permite dar ingreso a un usuario externo
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult IngresoExterno()
+        {
+            Session["Usuario"] = "Usuario Externo";
+            Session["UsuarioExterno"] = true;
+
+            return JavaScript("window.location = '" + Url.Action("Index", "Home") + "'");
+        }
+
+        /// <summary>
         /// Metodo encargado de cerrar la sesion del usuario
         /// </summary>
         /// <returns></returns>
         public async System.Threading.Tasks.Task<ActionResult> LimpiarSessionAsync()
         {
-            string mensaje = "";
-            HttpResponseMessage response = await client.GetAsync("device");
-            if (response.IsSuccessStatusCode)
+            if (!Data.UsuarioExterno)
             {
-                Session.Clear();
-                Session.RemoveAll();
-                Session["Usuario"] = null;
-                mensaje = await response.Content.ReadAsAsync<string>();
+                await DAOUser.Instance.FinalizarSession();
             }
+
+            Session.Clear();
+            Session.RemoveAll();
 
             return RedirectToAction("Index", "Sitio");
         }

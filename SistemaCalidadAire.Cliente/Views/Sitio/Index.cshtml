@@ -105,6 +105,8 @@
                                         <input type="submit" class="btn btn-primary btn-block" value="Iniciar sesion" />
                                     </div>
                                 }
+
+                                @Ajax.ActionLink("Ingreso Usuario Externo", "IngresoExterno", null, new AjaxOptions { OnBegin = "OnBegin", OnFailure = "OnFailure" }, new { @class = "btn btn-info btn-block" })
                             </div>
                         </div>
 

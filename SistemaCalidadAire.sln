@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaCalidadAire.Cliente"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaCalidadAire.Entidades", "SistemaCalidadAire.Entidades\SistemaCalidadAire.Entidades.csproj", "{28FB67BC-85C4-4918-8DA0-520C4C89D2F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaCalidadAire.Datos", "SistemaCalidadAire.Datos\SistemaCalidadAire.Datos.csproj", "{2030F7B9-71B3-4D5A-84B0-1C22E4DE0AB7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{28FB67BC-85C4-4918-8DA0-520C4C89D2F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28FB67BC-85C4-4918-8DA0-520C4C89D2F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28FB67BC-85C4-4918-8DA0-520C4C89D2F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2030F7B9-71B3-4D5A-84B0-1C22E4DE0AB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2030F7B9-71B3-4D5A-84B0-1C22E4DE0AB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2030F7B9-71B3-4D5A-84B0-1C22E4DE0AB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2030F7B9-71B3-4D5A-84B0-1C22E4DE0AB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

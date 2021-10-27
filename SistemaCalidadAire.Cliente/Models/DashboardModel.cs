@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using SistemaCalidadAire.Entidades;
 
 namespace SistemaCalidadAire.Cliente.Models
@@ -19,12 +16,12 @@ namespace SistemaCalidadAire.Cliente.Models
         public List<Device> ListaDispositivos { get; set; }
 
         /// <summary>
-        /// Listado de temperaturas
+        /// Listado de temperaturas para la grafica de temperaturas
         /// </summary>
         public List<DataGrafica> ListaTemperaturas { get; set; }
 
         /// <summary>
-        /// Listado de material particulado
+        /// Listado de material particulado para la grafica de material particulado
         /// </summary>
         public List<DataGrafica> ListaPM2 { get; set; }
     }

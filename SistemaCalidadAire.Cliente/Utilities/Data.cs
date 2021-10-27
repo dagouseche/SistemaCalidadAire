@@ -1,6 +1,5 @@
-﻿using System;
+﻿using SistemaCalidadAire.Entidades;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 
 namespace SistemaCalidadAire.Cliente.Utilities
@@ -14,7 +13,29 @@ namespace SistemaCalidadAire.Cliente.Utilities
         {
             get
             {
-                return (string)System.Web.HttpContext.Current.Session["Usuario"];
+                return (string)HttpContext.Current.Session["Usuario"];
+            }
+        }
+
+        /// <summary>
+        /// Cookie de la Session del usuario que esta logueado en el sistema
+        /// </summary>
+        public static string CookieSession
+        {
+            get
+            {
+                return (string)HttpContext.Current.Session["CookieSession"];
+            }
+        }
+
+        /// <summary>
+        /// Indica si el usuario es externo
+        /// </summary>
+        public static bool UsuarioExterno
+        {
+            get
+            {
+                return bool.Parse(HttpContext.Current.Session["UsuarioExterno"].ToString());
             }
         }
     }
