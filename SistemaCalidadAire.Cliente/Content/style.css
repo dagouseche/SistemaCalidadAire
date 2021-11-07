@@ -1045,3 +1045,84 @@ textarea .form-control {
 	.single_service > .service_title:after {left: 29%;}
 	.slider_caption {margin-top: 34%;}  
 }
+
+/*--------------------*/
+/* Navbar*/
+/*--------------------*/
+
+.nav {
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+}
+
+.navbar-nav ml-auto a {
+    font-family: poppins;
+    font-size: 13px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+.navbar-nav a {
+    margin-left: 10px;
+    border-radius: 20px;
+}
+
+.navbar-light .navbar-brand {
+    color: #04008F;
+    font-size: 25px;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.navbar-light .navbar-nav .active > .nav-link, .navbar-light .navbar-nav .nav-link.active, .navbar-light .navbar-nav .nav-link.show, .navbar-light .navbar-nav .show > .nav-link {
+    color: #3933FF;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: #929292;
+}
+
+.navbar-nav {
+    text-align: center;
+}
+
+.nav-link {
+    padding: .5rem 1rem;
+}
+
+.nav-link.active, .nav-link:focus {
+    color: #3933FF;
+}
+
+.navbar-toggler {
+    padding: 1px 5px;
+    font-size: 18px;
+    line-height: 0.3;
+    background: #fff;
+}
+
+.navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover {
+    color: #0065D1;
+}
+
+/*--------------------*/
+/* Colors background  */
+/*--------------------*/
+
+
+.bg-blue-light-100 {
+    background: #f9fbff;
+}
+
+.bg-blue-light-200 {
+    background: #eff5ff;
+}
+
+.bg-blue-light-400 {
+    background: #d0e1ed;
+}
+
+.bg-blue {
+    background: #0070bd;
+}
+
+

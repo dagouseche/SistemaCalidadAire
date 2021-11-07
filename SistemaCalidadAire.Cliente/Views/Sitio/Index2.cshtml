@@ -1,0 +1,595 @@
+﻿<!DOCTYPE html>
+
+<html lang="es-co">
+<head>
+
+    <!-- Basic Page Needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Sistema Calidad de Aire V2</title>
+
+    <!-- Mobile Specific Metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/png" href="~/Content/img/favicon.png" />
+
+    <!-- CSS
+    ================================================== -->
+    <!-- Bootstrap css file-->
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font awesome css file-->
+    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Superslide css file-->
+    <link rel="stylesheet" href="~/Content/css/superslides.css">
+    <!-- Slick slider css file -->
+    <link href="~/Content/css/slick.css" rel="stylesheet">
+    <!-- smooth animate css file -->
+    <link rel="stylesheet" href="~/Content/css/animate.css">
+    <!-- Elastic grid css file -->
+    <link rel="stylesheet" href="~/Content/css/elastic_grid.css">
+    <!-- Circle counter cdn css file -->
+    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/circliful/1.2.1/css/jquery.circliful.min.css'>
+    <!-- Default Theme css file -->
+    <link id="orginal" href="~/Content/themes/default-theme.css" rel="stylesheet">
+    <!-- Main structure css file -->
+    <link href="~/Content/style.css" rel="stylesheet">
+
+    @*jquery*@
+    <script type="text/javascript" src="~/ContentAdmin/bootstrap/js/jquery.min.js"></script>
+    <!-- initialize jQuery Library -->
+    @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>*@
+    <!-- For smooth animatin  -->
+    <script src="~/Content/js/wow.min.js"></script>
+    <!-- Bootstrap js -->
+    <script src="~/Content/js/bootstrap.min.js"></script>
+    @*<script src="~/Content/js/bootstrap.min.js"></script>*@
+    <!-- superslides slider -->
+    <script src="~/Content/js/jquery.superslides.min.js" type="text/javascript"></script>
+    <!-- slick slider -->
+    <script src="~/Content/js/slick.min.js"></script>
+    <!-- for circle counter -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/circliful/1.2.1/js/jquery.circliful.min.js'></script>
+    <!-- for portfolio filter gallery -->
+    <script src="~/Content/js/modernizr.custom.js"></script>
+    <script src="~/Content/js/classie.js"></script>
+    <script src="~/Content/js/elastic_grid.min.js"></script>
+
+    @*sweetalert2*@
+    <script src="~/ContentAdmin/SweetAlert2/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="~/ContentAdmin/SweetAlert2/sweetalert2.min.css">
+    @*AJAX*@
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <!-- Custom js-->
+    <script src="~/Content/js/custom.js"></script>
+</head>
+
+<body>
+    <!-- SCROLL TOP BUTTON -->
+    <a class="scrollToTop" href="#"><i class="fa fa-angle-up"></i></a>
+    <!-- END SCROLL TOP BUTTON -->
+
+    <div class="container">
+        <div class="modal fade" id="modalLogin" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 style="text-align:center" class="modal-title">Sistema Calidad de Aire</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-md-12">
+
+                                @using (Ajax.BeginForm("InicioSesionAsync", "Sitio", new AjaxOptions
+                                {
+                                    OnBegin = "OnBegin",
+                                    OnFailure = "OnFailure"
+                                }))
+                                {
+                                    <div class="form-group">
+                                        @Html.TextBox("usuario", null, htmlAttributes: new { placeholder = "Usuario", @class = "form-control", required = "required" })
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.Password("contraseña", null, htmlAttributes: new { placeholder = "Contraseña", @class = "form-control", required = "required" })
+                                    </div>
+                                    <div id="mensaje" class="form-group">
+                                        <label id="mensajeResultado"></label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="submit" class="btn btn-primary btn-block" value="Iniciar sesion" />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--=========== BEGIN HEADER SECTION ================-->
+    <header id="header">
+        <!-- BEGIN MENU -->
+        <div class="menu_area">
+            <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
+                        <!-- FOR MOBILE VIEW COLLAPSED BUTTON -->
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+
+                        <!-- LOGO -->
+                        <!-- TEXT BASED LOGO -->
+                        <!-- IMG BASED LOGO  -->
+                        @*<a class="navbar-brand" href="#"><img src="~/Content/img/logo.png" style="height:70px;margin-top:-22px" alt="logo"></a>*@
+                        <a class="navbar-brand" href="#"><span>U. EL BOSQUE</span></a>
+
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul id="top-menu" class="nav navbar-nav navbar-right main_nav">
+                            <li class="active"><a href="#">Inicio</a></li>
+                            <li><a href="#about">Nosotros</a></li>
+                            <li><a href="#works">Servicios</a></li>
+                            <li><a href="#team">Clientes</a></li>
+                            <li><a href="#contact">Contactenos</a></li>
+                            @*<li><a href="#afiliacion">Afiliarse</a></li>*@
+                            <li><a onclick="ModalLogin()">Login</a></li>
+                        </ul>
+                    </div><!--/.nav-collapse -->
+                </div>
+            </nav>
+        </div>
+        <!-- END MENU -->
+        <!-- BEGIN SLIDER AREA-->
+        <div class="slider_area">
+            <!-- BEGIN SLIDER-->
+            <div id="slides">
+                <ul class="slides-container">
+                    <li>
+                        <div class="slider_overlay"></div>
+                        <img src="~/Content/img/slides/BogotaAire.jpg" alt="img">
+                        <div class="slider_caption">
+                            <br /><br />
+                            <h2>Medición Calidad del aire PM2.5</h2>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="slider_overlay"></div>
+                        <img src="~/Content/img/slides/DBC.jpg" alt="img">
+                        <div class="slider_caption">
+                            <br /><br />
+                            <h2>Medición Calidad del aire PM2.5</h2>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="slider_overlay"></div>
+                        <img src="~/Content/img/slides/Dustrack.jpg" alt="img">
+                        <div class="slider_caption">
+                            <br /><br />
+                            <h2>Medición Calidad del aire PM2.5</h2>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="slider_overlay"></div>
+                        <img src="~/Content/img/slides/aeroqual.jpg" alt="img">
+                        <div class="slider_caption">
+                            <br /><br />
+                            <h2>Medición Calidad del aire PM2.5</h2>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="slider_overlay"></div>
+                        <img src="~/Content/img/slides/vista bogotá.jpg" alt="img">
+                        <div class="slider_caption">
+                            <br /><br />
+                            <h2>Medición Calidad del aire PM2.5</h2>
+                        </div>
+                    </li>
+                </ul>
+                <!-- BEGAIN SLIDER NAVIGATION -->
+                <nav class="slides-navigation">
+                    <!-- PREV IN THE SLIDE -->
+                    <a class="prev" href="#">
+                        <span class="icon-wrap"></span>
+                        <h3>
+                            <strong>
+                            </strong>
+                        </h3>
+                    </a>
+                    <!-- NEXT IN THE SLIDE -->
+                    <a class="next" href="#">
+                        <span class="icon-wrap"></span>
+                        <h3><strong>Siguiente</strong></h3>
+                    </a>
+                </nav>
+            </div>
+            <!-- END SLIDER-->
+        </div>
+        <!-- END SLIDER AREA -->
+    </header>
+    <!--=========== End HEADER SECTION ================-->
+    <!--=========== BEGIN ABOUT SECTION ================-->
+    <section id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="about_area">
+                        <!-- START ABOUT HEADING -->
+                        <div class="heading">
+                            <h2 class="wow fadeInLeftBig">Presentación y objetivo del proyecto:</h2>
+                            <p align="justify">
+                                Damos acceso público a datos de concentraciones de PM 10, PM 2.5, humedad relativa y temperatura medidos por un Dispositivo de Bajo Costo (DBC). Nuestro objetivo es ampliar la red de monitoreo de calidad del aire interior de viviendas donde la sociedad puede contribuir a la recolección de datos.
+                            </p>
+                            <p align="justify">
+                                Ofrecemos un análisis en tiempo real de la calidad del aire para la toma de decisiones de medidas preventivas dentro de la vivienda, por lo que su finalidad es concientizar sobre los efectos nocivos en la salud que provoca respirar diaria y constantemente una mala calidad del aire.
+                            </p>
+
+                            <h2 class="wow fadeInLeftBig">Misión y visión</h2>
+                            <p align="justify">
+                                Aportamos una herramienta digital con la que los usuarios pueden fortalecer la toma de decisiones de acuerdo a los niveles de concentración de los contaminantes atmosféricos promoviendo el mejoramiento de la calidad de vida de las comunidades.
+                            </p>
+                            <p align="justify">
+                                Tenemos la visión de empoderar a las personas usuarias dentro de la red de monitoreo de calidad del aire interior de viviendas para maximizar su importancia sobre la salud pública, al tiempo que se proponen alternativas responsables frente a los niveles de contaminación.
+                            </p>
+
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <h2 class="wow fadeInLeftBig">Biografías:</h2>
+                                    <div class="about_featured">
+                                        <div class="panel-group" id="accordion">
+                                            <!-- START SINGLE FEATURED ITEAM #1-->
+                                            <div class="panel panel-default wow fadeInLeft">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">
+                                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                                            <span class="fa fa-check-square-o"></span>Laura Viviana Cabezas Pinzon
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div id="collapseOne" class="panel-collapse collapse in">
+                                                    <div class="panel-body">
+                                                        Ingeniera Ambiental, especialista en Sistemas de Información Geográfica (SIG). Candidata a Magíster en Geomática de la Universidad Nacional de Colombia. Coordinadora del Observatorio SIG en Salud y Ambiente (OSSA) y del semillero de investigación TeGeS “Tecnologías de la Información Geográfica aplicadas a la Salud, Ambiente y Economía Circular”. Con experiencia de más de ocho años en temas de gestión y desarrollo de proyectos de Investigación relacionados con los Sistemas de Información Geográfica en la Universidad El Bosque.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- START SINGLE FEATURED ITEAM #2 -->
+                                            <div class="panel panel-default wow fadeInLeft">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">
+                                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                                            <span class="fa fa-check-square-o"></span>Héctor Adolfo Rueda Cadena
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div id="collapseTwo" class="panel-collapse collapse">
+                                                    <div class="panel-body">
+                                                        Ingeniero Ambiental y Sanitario con especialización en Higiene y Salud Ocupacional. Investigador del Instituto de Salud y Ambiente de la Universidad El Bosque en la Línea de Economía Circular y Saneamiento Ecológico. Profesor de Formulación y Evaluación de Proyectos y Director de Práctica Profesional de Emprendimiento de la Universidad Minuto de Dios.
+                                                        Tiene experiencia en los sectores de salud y educación. Tiene más de 15 años formulando, ejecutando y supervisando proyectos de salud ambiental y entornos saludables, con grupos de trabajo interdisciplinarios en el sector público y privado.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- START SINGLE FEATURED ITEAM #3 -->
+                                            <div class="panel panel-default wow fadeInLeft">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">
+                                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                                            <span class="fa fa-check-square-o"></span>Gustavo Adolfo Ordoñez Sierra
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div id="collapseThree" class="panel-collapse collapse">
+                                                    <div class="panel-body">
+                                                        Médico cirujano con especialización en alta gerencia y con maestría en epidemiología. Docente investigador en el componente salud y epidemiología en el Instituto de Salud y Ambiente (ISA) de la Universidad El Bosque. Tiene 2,5 años de experiencia en el sector público y 9 años en el sector privado.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- START SINGLE FEATURED ITEAM #3 -->
+                                            <div class="panel panel-default wow fadeInLeft">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">
+                                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                                                            <span class="fa fa-check-square-o"></span>David Felipe Beltrán G
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div id="collapse4" class="panel-collapse collapse">
+                                                    <div class="panel-body">
+                                                        Ingeniero químico con maestría en gerencia ambiental. Tiene experiencia en consultoría ambiental, formulación de proyectos low carbon, data science aplicado a la gestión estratégica ambiental, modelación ambiental, simulación de procesos contaminantes y analítica de datos, monitoreo, revisión, verificación de GEI y contaminación del aire (ISO 17025 - ISO 14046 - ISO 50001), y enseñanza y entrenamiento profesional ambiental y sostenibilidad.
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="panel panel-default wow fadeInLeft">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">
+                                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse5">
+                                                            <span class="fa fa-check-square-o"></span>Germán Campos
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div id="collapse5" class="panel-collapse collapse">
+                                                    <div class="panel-body">
+                                                        Docente universitario por más de 10 años en varias facultades de ingeniería y actual profesor asistente en Universidad El Bosque. Experiencia en investigación en ingeniería y asesoría de proyectos externos. Interés en los temas relacionados con Redes de Datos y Telecomunicaciones, Desarrollo de IoT, Gestión eficiente de la energía y Fuentes alternas de energía.
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="panel panel-default wow fadeInLeft">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">
+                                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse6">
+                                                            <span class="fa fa-check-square-o"></span>Jesús David Ramos Montaña
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div id="collapse6" class="panel-collapse collapse">
+                                                    <div class="panel-body">
+                                                        Licenciado en matemáticas, con especialización en estadística y maestría en ciencias - bioestadística. Con experiencia en asesorías a nivel investigativo y en la ejecución de proyectos utilizando métodos y análisis estadísticos. Interés en el análisis multivariado de datos y en los métodos de clustering (clasificación) aplicados a problemas de la bioestadística. Tiene más de 10 años de experiencia en educación.
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="panel panel-default wow fadeInLeft">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">
+                                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse6">
+                                                            <span class="fa fa-check-square-o"></span>Gabriela Garzón Lozano
+                                                        </a>
+                                                    </h4>
+                                                </div>
+                                                <div id="collapse6" class="panel-collapse collapse">
+                                                    <div class="panel-body">
+                                                        Estudiante de 10mo semestre de Ingeniería Ambiental en la Universidad El Bosque y practicante en el Instituto de Investigación Salud y Ambiente. Apoya el área de economía circular dentro del semillero de investigación Tecnologías de la Información Geográfica aplicadas a la Salud, Ambiente y Economía Circular. También apoya el diseño de cursos de educación continuada, el diseño de servicios en economía circular, los procesos investigativos sobre el dispositivo de bajo costo para medición de calidad del aire y postulación a convocatorias.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <br /><br />
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <h2 class="wow fadeInLeftBig">Medidas Preventivas / Recomendaciones</h2>
+                                    <p>
+                                        1. Reduzca el uso de estufas de leña y chimeneas
+                                        <br />2. Use filtros de aire HEPA (del inglés "High Efficiency Particle Arresting", o "recogedor de partículas de alta eficiencia")
+                                        <br />3. Use limpiadores de aire diseñados para reducir las partículas
+                                        <br />4. Ventile la casa diariamente
+                                        <br />5. Inspeccione y ponga a punto los sistemas de calefacción central anualmente.
+                                        <br />6. Repare cualquier fuga del sistema de calefacción/ ventilación adecuadamente.
+                                        <br />7. Cambie los filtros de la calefacción central y el aire acondicionado de acuerdo con las instrucciones del fabricante.
+                                        <br />8. Al cocinar mantenga el área aireada con ventanas abiertas o utilice un extractor de humo
+                                        <br />9. Asigne un lugar aireado que evite la entrada de humo si se realiza un asado en algún lugar de la vivienda
+                                        <br />10. Mantenga las puertas abiertas cuando se usen calentadores en espacios no ventilados
+                                        <br />11. Estipular una zona de fumadores con capacidad de liberar el humo al exterior
+                                    </p>
+                                </div>
+
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+
+                                    <img src="~/Content/img/contaminacion.jpg" alt="img">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--=========== END ABOUT SECTION ================-->
+    <!--=========== BEGAIN WORKS SECTION ================-->
+    <section id="works">
+        <!-- BEGAIN FORTFOLIO WORSK SECTION -->
+        <div class="row">
+            <div class="portfolio_area">
+                <!-- BEGAIN PORTFOLIO HEADER -->
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="container">
+                            <div class="heading">
+                                <h2 class="wow fadeInLeftBig">Servicios</h2>
+                                <p>
+                                    Pasando a la década de 1960, el Lorem Ipsum fue popularizado por el fabricante de tipografía Letraset, que lo utilizó en sus campañas publicitarias. Letraset ofrecía páginas de Lorem Ipsum como hojas de transferencia, que fueron ampliamente utilizadas en la era anterior a los ordenadores para los diseños. Estas páginas de transferencia, conocidas como Letraset Body Type, se incluyeron en la publicidad de la compañía y en su popular catálogo.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END PORTFOLIO HEADER -->
+            </div>
+        </div>
+        <!-- END FORTFOLIO WORSK SECTION -->
+    </section>
+    <!--=========== END WORKS SECTION ================-->
+    <!--=========== BEGAIN CONTACT SECTION ================-->
+    <section id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <!-- START CONTACT HEADING -->
+                    <div class="heading">
+                        <h2 class="wow fadeInLeftBig">Contactenos</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- BEGAIN CONTACT CONTENT -->
+                <div class="contact_content">
+                    <!-- BEGAIN CONTACT FORM -->
+                    <div class="col-lg-5 col-md-5 col-sm-5">
+                        <div class="contact_form">
+
+                            <!-- FOR CONTACT FORM MESSAGE -->
+                            @*<div id="form-messages"></div>*@
+
+                            @using (Ajax.BeginForm("Contactenos", "Inicio", new AjaxOptions
+                            {
+                                OnFailure = "AlertaConfirmacion('Envio Incorrecto', '', 'error')",
+                                OnSuccess = "AlertaConfirmacion('Envio Exitoso', '', 'success')"
+                            }, htmlAttributes: new { id = "formEmail" }))
+                            {
+                                @Html.TextBox("nombre", null, htmlAttributes: new { placeholder = "Nombre", @class = "form-control", required = "required" })
+                                @Html.TextBox("correo", null, htmlAttributes: new { placeholder = "Correo", @class = "form-control", required = "required", type = "email" })
+                                @Html.TextBox("asunto", null, htmlAttributes: new { placeholder = "Asunto", @class = "form-control", required = "required" })
+                                @Html.TextArea("mensaje", null, htmlAttributes: new { placeholder = "Mensaje", @class = "form-control", required = "required", rows = "10" })
+                                <br />
+                                <input type="reset" class="btn btn-default" value="Limpiar" />
+                                <input type="submit" class="btn btn-success" value="Enviar" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--=========== END CONTACT SECTION ================-->
+    <!--=========== BEGAIN CONTACT FEATURE SECTION ================-->
+    <section id="contactFeature">
+        <!-- SKILLS COUNTER OVERLAY -->
+        <div class="slider_overlay"></div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="container">
+                    <div class="contact_feature">
+                        <!-- BEGAIN CALL US FEATURE -->
+                        <div class="col-lg-3 col-md-3 col-sm-6" onclick="window.location='tel:3173889587'">
+                            <div class="single_contact_feaured wow fadeInUp">
+                                <i class="fa fa-phone"></i>
+                                <h4>Llámanos</h4>
+                                <a style="color:#888888" href="tel:3173889587">317 3889587</a>
+                                -
+                                <a style="color:#888888" href="tel:0316489000">(031) 648 9000</a>
+                            </div>
+                        </div>
+                        <!-- BEGAIN CALL US FEATURE -->
+                        <div class="col-lg-3 col-md-3 col-sm-6" onclick="window.location='mailto:atencionalusuario@unbosque.edu.co'">
+                            <div class="single_contact_feaured wow fadeInUp">
+                                <i class="fa fa-envelope-o"></i>
+                                <h4>Correo Electrónico</h4>
+                                <a style="color:#888888" href="mailto:atencionalusuario@unbosque.edu.co">atencionalusuario@unbosque.edu.co</a>
+                            </div>
+                        </div>
+                        <!-- BEGAIN CALL US FEATURE -->
+                        <div class="col-lg-3 col-md-3 col-sm-6">
+                            <div class="single_contact_feaured wow fadeInUp">
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3343.693176883394!2d-74.03382185392843!3d4.710222015938828!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f8555d1b06c95%3A0x4610903a0568130b!2sUniversidad%20El%20Bosque!5e0!3m2!1ses!2sco!4v1623185826235!5m2!1ses!2sco" width="230" height="125" frameborder="0" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                            </div>
+                        </div>
+                        <!-- BEGAIN CALL US FEATURE -->
+                        <div class="col-lg-3 col-md-3 col-sm-6">
+                            <div class="single_contact_feaured wow fadeInUp">
+                                <i class="fa fa-clock-o"></i>
+                                <h4>Horario Atención</h4>
+                                <p>Lunes-Viernes 8:30 am - 5:30 pm</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--=========== END CONTACT FEATURE SECTION ================-->
+    <!--=========== BEGAIN FOOTER ================-->
+    <footer id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="footer_left">
+                        <!--=========== Designed By WpFreeware Team ================-->
+                        <p>Copyright &copy; 2021 <a href="https://www.unbosque.edu.co/">U. El Bosque</a>. Todos los derechos reservados</p>
+                        <!--=========== Designed By WpFreeware Team ================-->
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="footer_right">
+                        <ul class="social_nav">
+                            <li><a href="https://www.facebook.com/universidadelbosque"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="https://twitter.com/UElBosque"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="https://www.instagram.com/uelbosque/"><i class="fa fa-instagram"></i></a></li>
+                            <li><a href="https://www.youtube.com/user/universidadelbosque"><i class="fa fa-youtube"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!--=========== END FOOTER ================-->
+</body>
+</html>
+
+<script type="text/javascript">
+
+    function OnFailure(e) {
+        $("#mensaje").empty().append("<label>Usuario o contraseña incorrecto.</label>");
+    }
+
+    function OnBegin() {
+        $("#mensaje").empty().append("<img src='Content/img/loading.gif'></img>");
+    }
+
+    function myfunction() {
+
+        var validator = $("#formulario").validate();
+        if (!validator.form()) {
+            return;
+        }
+
+        var formData = new FormData(document.getElementById("formulario"));
+
+        $.ajax({
+            url: "inicio/enviarCorreo",
+            data: formData,
+            type: "post",
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                AlertaConfirmacion("Envio Exitoso", "", "success");
+                $("#nombre").val("");
+                $("#correo").val("");
+                $("#asunto").val("");
+                $("#mensaje").empty();
+
+            },
+            error: function (error) {
+                AlertaConfirmacion("Envio Incorrecto", "", "error");
+            }
+        })
+    }
+
+    function AlertaConfirmacion(encabezado, mensaje, tipo) {
+        swal({
+            title: encabezado,
+            text: mensaje,
+            type: tipo,
+            showCancelButton: false,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '',
+            confirmButtonText: 'OK',
+            cancelButtonText: '',
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: '',
+            buttonsStyling: false
+        }).then(function () { })
+    }
+
+    function ModalLogin() {
+        $("#modalLogin").modal('show');
+    }
+</script>
